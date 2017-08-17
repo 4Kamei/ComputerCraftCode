@@ -34,7 +34,7 @@ function move_position(x, y, z)
     turtle.turnRight()
     dir = "x-"
   end
-  for i=1,math.math.abs(x) do
+  for i=1,math.abs(x) do
     print("moving forward in X")
     turtle.forward()
   end

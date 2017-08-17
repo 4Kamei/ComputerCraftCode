@@ -29,14 +29,14 @@ function move_position(x, y, z)
     turtle.forward()
   end
   if z < 0 then
-    if dir = "x+" then
+    if dir == "x+" then
       turtle.turnLeft()
     else
       turtle.turnRight()
     end
     dir = "z-"
   else
-    if dir = "x+" then
+    if dir == "x+" then
       turtle.turnRight()
     else
       turtle.turnLeft()
@@ -46,7 +46,7 @@ function move_position(x, y, z)
   for i=1,z do
     turtle.forward()
   end
-  if dir = "z-" then
+  if dir == "z-" then
     turtle.turnRight()
   else
     turtle.turnLeft()

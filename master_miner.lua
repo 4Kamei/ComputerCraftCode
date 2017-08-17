@@ -5,7 +5,6 @@ function setup_gps_cube(x, y, z)
   turtle.place()
   turtle.select(2)
   turtle.drop()
-  shell.run("cp", "./miner/gps","./disk/startup")
   turtle.up()
   turtle.select(3)
   local positions = {}

@@ -1,7 +1,9 @@
 os.loadAPI("CTMP")
 w = peripheral.wrap("left")
 turtle.refuel()
-
+local serveX = 0
+local serveY = 0
+local serveZ = 0
 function waitForStop()
   print("waiting for stop")
   while true do
@@ -16,40 +18,49 @@ end
 
 function serveGPS()
   print("serving GPS")
-  shell.run("gps", tostring(to_x + x), tostring(to_y + y), tostring(to_z + z))
+  shell.run("gps", tostring(serveX), tostring(serveY), tostring(serveZ))
 end
 
 function move_position(x, y, z)
   print("moving")
+  print("x=" .. tostring(x) .. " y=" .. tostring(y) .. " z=" .. tostring(z))
   for i=1,y do
     turtle.up()
   end
   dir = "x+"
   if x < 0 then
+    print("turning around")
     turtle.turnRight()
     turtle.turnRight()
     dir = "x-"
   end
-  for i=1,x do
+  for i=1,math.math.abs(x) do
+    print("moving forward in X")
     turtle.forward()
   end
   if z < 0 then
+    print("negative z")
     if dir == "x+" then
+      print("turn left")
       turtle.turnLeft()
     else
+      print("turn right")
       turtle.turnRight()
     end
     dir = "z-"
   else
+    print("positive z")
     if dir == "x+" then
+      print("turn right")
       turtle.turnRight()
     else
+      print("turn left")
       turtle.turnLeft()
     end
     dir = "z+"
   end
   print(dir)
-  for i=1,z do
+  for i=1,math.abs(z) do
     turtle.forward()
   end
   if dir == "z-" then
@@ -94,6 +105,9 @@ while true do
     local to_x = data["to_x"]
     local to_y = data["to_y"]
     local to_z = data["to_z"]
+    serveX = tonumber(x) + tonumber(to_x)
+    serveY = tonumber(y) + tonumber(to_y)
+    serveZ = tonumber(z) + tonumber(to_z)
     move_position(to_x, to_y, to_z)
     parallel.waitForAny(serveGPS, waitForStop)
     move_position_back(to_x, to_y, to_z)

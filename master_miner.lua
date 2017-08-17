@@ -34,7 +34,7 @@ function setup_gps_cube(x, y, z)
     local err = nil
     repeat
       result, err = CTMP.send(w, 155, textutils.serialize(data))
-      print("result=" .. tostring(result) .. " - " .. tostring(err)
+      print("result=" .. tostring(result) .. " - " .. tostring(err))
     until result == true
   end
 end

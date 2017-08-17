@@ -1,5 +1,5 @@
 os.loadAPI("CTMP")
-w = peripheral.wrap("right")
+w = peripheral.wrap("left")
 turtle.refuel()
 
 function waitForStop()

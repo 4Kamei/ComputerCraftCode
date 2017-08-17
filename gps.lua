@@ -17,7 +17,7 @@ function waitForStop()
 end
 
 function serveGPS()
-  print("serving GPS")
+  print("serving GPS at x=" .. tostring(serveX) .. " y=" .. tostring(serveY) .. " z=" .. tostring(serveZ))
   shell.run("gps", "host", tostring(serveX), tostring(serveY), tostring(serveZ))
 end
 
@@ -72,7 +72,7 @@ end
 
 function move_position_back(x, y, z)
   print("moving")
-  for i=1,x do
+  for i=1,math.abs(x) do
     turtle.back()
   end
 
@@ -82,11 +82,11 @@ function move_position_back(x, y, z)
     turtle.turnRight()
   end
 
-  for i=1,z do
+  for i=1,math.abs(z) do
     turtle.forward()
   end
 
-  for i=1,y do
+  for i=1,math.abs(y) do
     turtle.down()
   end
 end

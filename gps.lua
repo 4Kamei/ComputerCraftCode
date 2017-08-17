@@ -5,7 +5,8 @@ turtle.refuel()
 function waitForStop()
   print("waiting for stop")
   while true do
-    local data = textutils.unserialize(CTMP.listen(w, 155))
+    local state, message = CTMP.listen(w, 155)
+    local data = textutils.unserialize(message)
     if data["id"] == os.getComputerID() then
       print("got stop signal")
       return
@@ -80,7 +81,8 @@ end
 
 while true do
   print("init")
-  local data = textutils.unserialize(CTMP.listen(w, 155))
+  local state, mess = CTMP.listen(w, 155)
+  local data = textutils.unserialize(mess)
   local type = data["order"]
   local id = data["id"]
   print("got message id = " .. tostring(id))

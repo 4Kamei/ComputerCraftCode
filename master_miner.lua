@@ -6,7 +6,6 @@ function setup_gps_cube(x, y, z)
   turtle.select(2)
   turtle.drop()
   turtle.up()
-  turtle.select(3)
   local positions = {}
   positions[1] = {20, 10, -20}
   positions[2] = {20, 10, 20}
@@ -14,6 +13,7 @@ function setup_gps_cube(x, y, z)
   positions[4] = {-20, 10, 20}
   positions[5] = {0, 20, 0}
   for i,v in ipairs(positions) do
+    turtle.select(3)
     turtle.place()
     local data = {}
     data["type"] = "order"
@@ -28,7 +28,6 @@ function setup_gps_cube(x, y, z)
     turtle.drop(1)
     print("turning on")
     peripheral.call("front", "turnOn")
-    turtle.select(3)
     print("adding fuel")
     local result = nil
     local err = nil
@@ -36,6 +35,7 @@ function setup_gps_cube(x, y, z)
       result, err = CTMP.send(w, 155, textutils.serialize(data))
       print("result=" .. tostring(result) .. " - " .. tostring(err))
     until result == true
+    sleep(1.5)
   end
 end
 

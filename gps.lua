@@ -48,6 +48,7 @@ function move_position(x, y, z)
     end
     dir = "z+"
   end
+  print(dir)
   for i=1,z do
     turtle.forward()
   end
@@ -75,7 +76,7 @@ function move_position_back(x, y, z)
   end
 
   for i=1,y do
-    turtle.dowm()
+    turtle.down()
   end
 end
 
@@ -94,7 +95,7 @@ while true do
     local to_y = data["to_y"]
     local to_z = data["to_z"]
     move_position(to_x, to_y, to_z)
-    parallels.waitForAny(serveGPS, waitForStop)
+    parallel.waitForAny(serveGPS, waitForStop)
     move_position_back(to_x, to_y, to_z)
     print("exiting")
     shell.exit()

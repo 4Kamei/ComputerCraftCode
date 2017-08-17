@@ -9,7 +9,7 @@ function waitForStop()
   while true do
     local state, message = CTMP.listen(w, 155)
     local data = textutils.unserialize(message)
-    if data["id"] == os.getComputerID() then
+    if data and data["id"] == os.getComputerID() then
       print("got stop signal")
       return
     end

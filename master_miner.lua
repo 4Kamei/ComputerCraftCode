@@ -29,7 +29,8 @@ function setup_gps_cube(x, y, z)
     turtle.drop(1)
     peripheral.call("front", "turnOn")
     turtle.select(2)
-    local result = nil, err = nil
+    local result = nil
+    local err = nil
     repeat
       result, err = CTMP.send(w, 155, textutils.serialize(data))
     until result == true
@@ -47,10 +48,8 @@ local y = 0
 local z = 0
 local dir = 1
 if args[1] == "auto" then
-  term.write("Master position: ")
-  pos = string.split(string.gsub(read(), " ", ""), ",")
-  x = pos[1]
-  y = pos[2]
-  z = pos[3]
+  x = args[2]
+  y = args[3]
+  z = args[4]
   setup_gps_cube(x, y, z)
 end

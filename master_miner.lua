@@ -24,16 +24,18 @@ function setup_gps_cube(x, y, z)
     data["to_y"] = v[2]
     data["to_z"] = v[3]
     data["id"] = peripheral.call("front", "getID")
-    turtle.select(3)
+    turtle.select(4)
     turtle.drop(1)
+    print("turning on")
     peripheral.call("front", "turnOn")
-    turtle.select(2)
+    turtle.select(3)
+    print("adding fuel")
     local result = nil
     local err = nil
     repeat
       result, err = CTMP.send(w, 155, textutils.serialize(data))
+      print("result=" .. tostring(result) .. " - " .. tostring(err)
     until result == true
-
   end
 end
 

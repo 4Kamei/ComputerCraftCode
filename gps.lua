@@ -3,19 +3,23 @@ w = peripheral.wrap("right")
 turtle.refuel()
 
 function waitForStop()
+  print("waiting for stop")
   while true do
     local data = textutils.unserialize(CTMP.listen(w, 155))
     if data["id"] == os.getComputerID() then
+      print("got stop signal")
       return
     end
   end
 end
 
 function serveGPS()
+  print("serving GPS")
   shell.run("gps", tostring(to_x + x), tostring(to_y + y), tostring(to_z + z))
 end
 
 function move_position(x, y, z)
+  print("moving")
   for i=1,y do
     turtle.up()
   end
@@ -54,6 +58,7 @@ function move_position(x, y, z)
 end
 
 function move_position_back(x, y, z)
+  print("moving")
   for i=1,x do
     turtle.back()
   end
@@ -74,9 +79,11 @@ function move_position_back(x, y, z)
 end
 
 while true do
+  print("init")
   local data = textutils.unserialize(CTMP.listen(w, 155))
   local type = data["order"]
   local id = data["id"]
+  print("got message id = " .. tostring(id))
   if tonumber(id) == os.getComputerID() then
     local x = data["y_x"]
     local y = data["y_y"]
@@ -87,5 +94,8 @@ while true do
     move_position(to_x, to_y, to_z)
     parallels.waitForAny(serveGPS, waitForStop)
     move_position_back(to_x, to_y, to_z)
+    print("exiting")
+    shell.exit()
+    return
   end
 end

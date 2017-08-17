@@ -112,7 +112,6 @@ while true do
     parallel.waitForAny(serveGPS, waitForStop)
     move_position_back(to_x, to_y, to_z)
     print("exiting")
-    shell.exit()
     return
   end
 end

@@ -37,6 +37,12 @@ function setup_gps_cube(x, y, z)
     until result == true
     sleep(1.5)
   end
+  turtle.down()
+  turtle.select(2)
+  turtle.suck()
+  turtle.select(1)
+  turtle.dig()
+  turtle.forward()
 end
 
 

@@ -99,9 +99,9 @@ while true do
   local id = data["id"]
   print("got message id = " .. tostring(id))
   if tonumber(id) == os.getComputerID() then
-    local x = data["y_x"]
-    local y = data["y_y"]
-    local z = data["y_z"]
+    local x = data["pos_x"]
+    local y = data["pos_y"]
+    local z = data["pos_z"]
     local to_x = data["to_x"]
     local to_y = data["to_y"]
     local to_z = data["to_z"]

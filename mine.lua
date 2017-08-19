@@ -73,7 +73,7 @@ function send_update (type)
     return
   end
   c = coroutine.create(function ()
-    r, reason = CTMP.send(w, 155, textutils.serialize(m))
+    r, reason = CTMP.send(w, 155, _MASTER_ID .. "sytax error", textutils.serialize(m))
     if r == false then
       term.write("couldn't send update because " .. reason)
     else

@@ -18,7 +18,7 @@ end
 
 function serveGPS()
   print("serving GPS at x=" .. tostring(serveX) .. " y=" .. tostring(serveY) .. " z=" .. tostring(serveZ))
-  shell.run("gps", "host", tostring(serveX), tostring(serveY), tostring(serveZ))
+  shell.run("gps", "host", tostring(serveX), tostring(serveY-1), tostring(serveZ))
 end
 
 function move_position(x, y, z)

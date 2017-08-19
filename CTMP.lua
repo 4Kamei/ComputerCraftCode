@@ -11,7 +11,7 @@ function send(interface, channel, id, message)
     data["isBroadcast"] = false
   end
 
-  data["size"] = length(message)
+  data["size"] = string.len(message)
   data["data"] = message
   text = textutils.serialize(data)
 

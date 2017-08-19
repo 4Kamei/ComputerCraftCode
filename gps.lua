@@ -100,10 +100,8 @@ while true do
   local state, mess = CTMP.listen(w, 155)
   local data = textutils.unserialize(mess)
   print(data)
-  local type = data["order"]
-  local id = data["id"]
-  print("got message id = " .. tostring(id))
-  if tonumber(id) == os.getComputerID() then
+  local type = data["type"]
+  if type == "order" then
     local x = data["pos_x"]
     local y = data["pos_y"]
     local z = data["pos_z"]

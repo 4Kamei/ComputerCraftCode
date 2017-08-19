@@ -1,8 +1,21 @@
-function send(interface, channel, message)
+function send(interface, channel, id, message)
   --uses reply channel as message 'id'
   local token = math.random(0, 65536)
   interface.open(channel)
-  interface.transmit(channel, token, message)
+
+  local data = {}
+  if id == true then
+    data["isBroadcast"] = true
+  else
+    data["id"] = id
+    data["isBroadcast"] = false
+  end
+
+  data["size"] = length(message)
+  data["data"] = message
+  text = textutils.serialize(data)
+
+  interface.transmit(channel, token, text)
   local timer = os.startTimer(1)
 
   while true do
@@ -27,6 +40,7 @@ function listen(interface, channel, timeout)
   if interface.isOpen(channel) then
     return false, "already listening on " .. tostring(channel)
   end
+
   interface.open(channel)
   local timer = nil
   if timeout then
@@ -37,9 +51,12 @@ function listen(interface, channel, timeout)
     local sEvent, p1, p2, p3, p4 = os.pullEvent()
     if sEvent == "modem_message" then
       if p2 == channel then
-        interface.transmit(channel, p3, "OK")
-        interface.close(channel)
-        return true, p4
+        data = textutils.unserialize(p4)
+        if data["isBroadcast"] or data["id"] == os.getComputerID() then
+          interface.transmit(channel, p3, "OK")
+          interface.close(channel)
+          return true, data["data"], data["size"]
+        end
       end
     elseif sEvent == "timer" then
       if timer == p1 then

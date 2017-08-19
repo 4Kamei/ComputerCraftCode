@@ -53,7 +53,9 @@ function listen(interface, channel, timeout)
       if p2 == channel then
         data = textutils.unserialize(p4)
         if data["isBroadcast"] or data["id"] == os.getComputerID() then
-          interface.transmit(channel, p3, "OK")
+          if data["isBroadcast"] == false then
+            interface.transmit(channel, p3, "OK")
+          end
           interface.close(channel)
           return true, data["data"], data["size"]
         end

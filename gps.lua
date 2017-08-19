@@ -91,7 +91,7 @@ function move_position_back(x, y, z)
   end
 
   for i=1,math.abs(y) do
-    while turtle.down() do end 
+    while turtle.down() do end
   end
 end
 
@@ -99,6 +99,7 @@ while true do
   print("init")
   local state, mess = CTMP.listen(w, 155)
   local data = textutils.unserialize(mess)
+  print(data)
   local type = data["order"]
   local id = data["id"]
   print("got message id = " .. tostring(id))

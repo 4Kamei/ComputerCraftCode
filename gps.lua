@@ -72,8 +72,12 @@ end
 
 function move_position_back(x, y, z)
   print("moving")
+  local func = turtle.forward()
+  if x > 0 then
+    func = turtle.back()
+  end
   for i=1,math.abs(x) do
-    turtle.back()
+    func()
   end
 
   if z > 0 then
@@ -87,7 +91,7 @@ function move_position_back(x, y, z)
   end
 
   for i=1,math.abs(y) do
-    turtle.down()
+    while turtle.down() do end 
   end
 end
 

@@ -87,10 +87,48 @@ local function compute_regions (x1, y1, z1, x2, y2, z2, segSize)
     return regions
 end
 
+local function contains(data, array)
+  --binary search
+end
+
+local function new_turtle(data)
+  local id = data["id"]
+  local t_ids = fs.open("workers", "wr")
+  local ids = JSON.decode(t_ids)
+  if ~ids[id] then
+    ids[id] = true
+  else
+    print("computer with ID " .. id .. " already a worker?")
+  end
+  t_ids.write(JSON.encode(t_ids))
+  t_ids.close()
+end
+
+--[[
+  wifi message format:
+  new_turtle:
+    id - id of the turtle
+]]
+
 local function main()
+  local lookup = {
+    ["new_turtle"] = new_turtle(x),
+  }
   while true do
-    res, message = CTMP.listen(w, 155)
+    local res, message = CTMP.listen(w, 155)
     print(tostring(res) .. " : " .. message)
+    if res then
+      local data = textutils.unserialize(message)
+      if data then
+        type = data["order"]
+        local f = lookup[type]
+        if f then
+          f(data["data"])
+        end
+        print("unknown data type \"" .. type .. "\"")
+      end
+      print("recieved unknown message \"" .. message .. "\"")
+    end
   end
 end
 
@@ -103,6 +141,8 @@ local x = 0
 local y = 0
 local z = 0
 local dir = 1
+
+shell.setDir("miner")
 
 if args[1] == "manual" then
   x = args[2]
@@ -141,7 +181,7 @@ elseif args[1] == "auto" then
 
   --Compute Regions
   regions = compute_regions(x1, y1, z1, x2, y2, z2, segSize)
-  file = fs.open("miner/regions", "w")
+  file = fs.open("regions", "w")
   file.write(JSON.encode(regions))
   file.close()
   --Main routine

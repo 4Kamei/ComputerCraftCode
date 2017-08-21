@@ -103,9 +103,16 @@ if args[1] == "manual" then
   z = args[4]
   setup_gps_cube(x, y, z)
 elseif args[1] == "auto" then
-  local f = args[2]
+  local f
+  if args[2] then
+    f = args[2]
+  else
+    print("using default config")
+    f = "config.miner"
+  end
   if fs.exists(f) == false then
-    print("Config file " .. f .. " doesn't exist")
+    print("Config file \"" .. f .. "\" doesn't exist")
+    return
   end
   local fi = fs.open(f, "r")
   local text = JSON.decode(fi.readAll())

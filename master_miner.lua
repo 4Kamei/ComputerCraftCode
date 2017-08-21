@@ -87,6 +87,13 @@ local function compute_regions (x1, y1, z1, x2, y2, z2, segSize)
     return regions
 end
 
+local function main()
+  while true do
+    res, message = CTMP.listen(w, 155)
+    print(tostring(res) .. " : " .. message)
+  end
+end
+
 os.loadAPI("CTMP")
 os.loadAPI("JSON")
 shell.setDir(".")
@@ -117,6 +124,8 @@ elseif args[1] == "auto" then
   local fi = fs.open(f, "r")
   local text = JSON.decode(fi.readAll())
   fi.close()
+
+  --Setup GPS
   local x1 = text["region"]["x1"]
   local y1 = text["region"]["y1"]
   local z1 = text["region"]["z1"]
@@ -128,10 +137,14 @@ elseif args[1] == "auto" then
   local y = text["master"]["y"]
   local z = text["master"]["z"]
   local masterID = os.getComputerID()
-  --setup_gps_cube(x, y, z)
-  --GPS cube up
+  setup_gps_cube(x, y, z)
+
+  --Compute Regions
   regions = compute_regions(x1, y1, z1, x2, y2, z2, segSize)
   file = fs.open("miner/regions", "w")
   file.write(JSON.encode(regions))
   file.close()
+  --Main routine
+
+  main()
 end

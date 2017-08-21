@@ -1,4 +1,4 @@
-function setup_gps_cube(x, y, z)
+local function setup_gps_cube(x, y, z)
   print("setting up cube around " .. tostring(x) .. ", " .. tostring(y) .. ", " .. tostring(z))
   turtle.back()
   turtle.select(1)
@@ -49,8 +49,46 @@ function setup_gps_cube(x, y, z)
   turtle.forward()
 end
 
+local function get_region (x1, z1, s_x, s_z, index)
+  local r = {}
+  r["x"] = x1
+  r["z"] = z1
+  r["s_x"] = s_x
+  r["s_z"] = s_z
+  r["i"] = index
+  return r
+end
+
+local function compute_regions (x1, y1, z1, x2, y2, z2, segSize)
+    regions = {}
+
+    local s_x = math.abs(x1 - x2)
+    local s_z = math.abs(z1 - z2)
+    local extra_X = s_x % segSize
+    local extra_Z = s_z % segSize
+    print(extra_X)
+    print(extra_Z)
+    index = 1
+
+    for z=0,s_z-(1+extra_Z),segSize do
+        for x=0,s_x-(1+extra_X),segSize do
+          regions[index] = get_region(x, z, segSize, segSize, index)
+          index = index + 1
+        end
+        if extra_X > 0 then
+          regions[index] = get_region(s_x - extra_X, z, extra_X, segSize, index)
+          index = index + 1
+        end
+    end
+    if extra_Z > 0 then
+      regions[index] = get_region(s_x - extra_X, s_z - extra_Z, extra_X, extra_Z, index)
+    end
+
+    return regions
+end
 
 os.loadAPI("CTMP")
+os.loadAPI("JSON")
 shell.setDir(".")
 w = peripheral.wrap("right")
 args = {...}
@@ -59,9 +97,36 @@ local y = 0
 local z = 0
 local dir = 1
 
-if args[1] == "auto" then
+if args[1] == "manual" then
   x = args[2]
   y = args[3]
   z = args[4]
   setup_gps_cube(x, y, z)
+elseif args[1] == "auto" then
+  local f = args[2]
+  if fs.exists(f) == false then
+    print("Config file " .. f .. " doesn't exist")
+  end
+  local fi = fs.open(f, "r")
+  local text = JSON.decode(fi.readAll())
+  fi.close()
+  local x1 = text["region"]["x1"]
+  local y1 = text["region"]["y1"]
+  local z1 = text["region"]["z1"]
+  local x2 = text["region"]["x2"]
+  local y2 = text["region"]["y2"]
+  local z2 = text["region"]["z2"]
+  local segSize = text["segments"]
+  local x = text["master"]["x"]
+  local y = text["master"]["y"]
+  local z = text["master"]["z"]
+  local masterID = os.getComputerID()
+  --setup_gps_cube(x, y, z)
+  --GPS cube up
+  regions = compute_regions(x1, y1, z1, x2, y2, z2, segSize)
+  file = fs.open("miner/regions", "w")
+  for i,v in ipairs(regions) do
+    file.write(textutils.serialize(v))
+  end
+  file.close()
 end

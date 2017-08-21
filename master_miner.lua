@@ -132,8 +132,6 @@ elseif args[1] == "auto" then
   --GPS cube up
   regions = compute_regions(x1, y1, z1, x2, y2, z2, segSize)
   file = fs.open("miner/regions", "w")
-  for i,v in ipairs(regions) do
-    file.write(textutils.serialize(v))
-  end
+  file.write(JSON.encode(regions))
   file.close()
 end

@@ -102,7 +102,7 @@ local function get_region(regionID)
 end
 --assigns a job to turtle
 --job contains data from 'jobs' to be serialized
-local functon assign_job(t_id, job)
+local function assign_job(t_id, job)
   print("assigning turtle with id " .. tostring(t_id) .. " job with ID " .. tostring(job["regionID"]))
   local job_data = {}
   job_data["progress"] = job["progress"]
@@ -110,7 +110,7 @@ local functon assign_job(t_id, job)
   local message = textutils.serialize(job_data)
   repeat
     local res, message = CTMP.send(w, 155, t_id, message)
-    if ~res then
+    if res == false then
       print("unable to send message : " .. message)
     end
   until res

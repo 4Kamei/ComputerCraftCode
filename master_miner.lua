@@ -137,7 +137,7 @@ local function check_jobs()
 
   local num = 1
 
-  for i,v in ipairs(workers)
+  for i,v in ipairs(workers) do
     assgin_job(v, j[i])
     j[i] = nil
     workers[i] = nil
@@ -169,7 +169,7 @@ local function new_turtle(data)
   local id = data["id"]
   local t_ids = fs.open("workers", "r")
   local ids = JSON.decode(t_ids.readAll())
-  if ~ids[id] then
+  if ids[id] == nil then
     ids[id] = true
     print("added ID " .. tostring(id) .. " to workers list")
   else
@@ -190,8 +190,9 @@ end
 
 local function main()
   local lookup = {
-    ["new_turtle"] = new_turtle(x),
+    ["new_turtle"] = new_turtle ,
   }
+  print("main loop")
   while true do
     local res, message = CTMP.listen(w, 155)
     print(tostring(res) .. " : " .. message)
@@ -255,7 +256,7 @@ elseif args[1] == "auto" then
   local y = text["master"]["y"]
   local z = text["master"]["z"]
   local masterID = os.getComputerID()
-  if text["needsGPS"] then
+  if text["needsGPS"] == true then
     setup_gps_cube(x, y, z)
   end
 

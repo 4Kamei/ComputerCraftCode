@@ -55,7 +55,7 @@ local function get_region (x1, z1, s_x, s_z, index)
   r["z"] = z1
   r["s_x"] = s_x
   r["s_z"] = s_z
-  r["i"] = index
+  r["regionID"] = index
   return r
 end
 
@@ -87,21 +87,99 @@ local function compute_regions (x1, y1, z1, x2, y2, z2, segSize)
     return regions
 end
 
-local function contains(data, array)
-  --binary search
+--gets region data as table from regionID
+local function get_region(regionID)
+  local f = fs.open("regions", "r")
+  local data = JSON.decode(f.readAll())
+  f.close()
+  for i,v in ipairs(table_name) do
+    if regionID == v["regionID"] then
+      return v
+    end
+  end
+  print("error")
+  error("region with ID " .. tostring(regionID) .. " doesn't exist?")
+end
+--assigns a job to turtle
+--job contains data from 'jobs' to be serialized
+local functon assign_job(t_id, job)
+  print("assigning turtle with id " .. tostring(t_id) .. " job with ID " .. tostring(job["regionID"]))
+  local job_data = {}
+  job_data["progress"] = job["progress"]
+  job_data["region"] = get_region(job["regonID"])
+  local message = textutils.serialize(job_data)
+  repeat
+    local res, message = CTMP.send(w, 155, t_id, message)
+    if ~res then
+      print("unable to send message : " .. message)
+    end
+  until res
+  print("assigned")
 end
 
+--checks if there are any workers that can be assigned a job
+local function check_jobs()
+  print("checking jobs")
+  local f_w = fs.open("workers", "r")
+  local jobs = fs.open("jobs", "r")
+  local workers = {}
+  local index = 1
+  repeat
+    id = f_w.readLine()
+    workers[index] = id
+    index = index + 1
+  until id
+  local j = JSON.decode(jobs)
+
+  jobs.close()
+  f_w.close()
+  local jobNum = j["jobNum"]
+
+  local num = 1
+
+  for i,v in ipairs(workers)
+    assgin_job(v, j[i])
+    j[i] = nil
+    workers[i] = nil
+    jobNum = jobNum - 1
+    num = num + 1
+    if jobNum == 0 then
+      return
+    end
+  end
+
+
+  jobs = fs.open("jobs", "w")
+  jobs.write(JSON.enocde(j))
+  jobs.close()
+
+  f_w = fs.open("workers", "w")
+  for i,v in ipairs(workers) do
+    f_w.write(v)
+  end
+  f_w.close()
+
+  print("job check finished")
+  print(tostring(num) .. " workers given jobs")
+
+end
+
+--adds a turtle to the workers list
 local function new_turtle(data)
   local id = data["id"]
-  local t_ids = fs.open("workers", "wr")
-  local ids = JSON.decode(t_ids)
+  local t_ids = fs.open("workers", "r")
+  local ids = JSON.decode(t_ids.readAll())
   if ~ids[id] then
     ids[id] = true
+    print("added ID " .. tostring(id) .. " to workers list")
   else
     print("computer with ID " .. id .. " already a worker?")
   end
+  t_ids.close()
+  local t_ids = fs.open("workers", "w")
   t_ids.write(JSON.encode(t_ids))
   t_ids.close()
+  check_jobs()
 end
 
 --[[
@@ -177,9 +255,12 @@ elseif args[1] == "auto" then
   local y = text["master"]["y"]
   local z = text["master"]["z"]
   local masterID = os.getComputerID()
-  setup_gps_cube(x, y, z)
+  if text["needsGPS"] then
+    setup_gps_cube(x, y, z)
+  end
 
   --Compute Regions
+  print("computing regions")
   regions = compute_regions(x1, y1, z1, x2, y2, z2, segSize)
   file = fs.open("regions", "w")
   file.write(JSON.encode(regions))

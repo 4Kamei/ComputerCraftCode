@@ -204,7 +204,7 @@ local function main()
         if f then
           f(data["data"])
         end
-        print("unknown data type \"" .. type .. "\"")
+        print("unknown data type \"" .. tostring(type) .. "\"")
       end
       print("recieved unknown message \"" .. message .. "\"")
     end

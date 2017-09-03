@@ -167,19 +167,27 @@ end
 --adds a turtle to the workers list
 local function new_turtle(data)
   local id = data["id"]
-  local t_ids = fs.open("workers", "r")
-  local ids = JSON.decode(t_ids.readAll())
-  if ids[id] == nil then
-    ids[id] = true
-    print("added ID " .. tostring(id) .. " to workers list")
+
+  if fs.exists("workers") then
+    local t_ids = fs.open("workers", "r")
+    local ids = JSON.decode(t_ids.readAll())
+    if ids[id] == nil then
+      ids[id] = true
+      print("added ID " .. tostring(id) .. " to workers list")
+    else
+      print("computer with ID " .. id .. " already a worker?")
+    end
+    t_ids.close()
+    local t_ids = fs.open("workers", "w")
+    t_ids.write(JSON.encode(t_ids))
+    t_ids.close()
   else
-    print("computer with ID " .. id .. " already a worker?")
+    local t_ids = fs.open("workers", "w")
+    t_ids.write() ---The other function using this doesn't JSON the IDS. Make your mind up.
   end
-  t_ids.close()
-  local t_ids = fs.open("workers", "w")
-  t_ids.write(JSON.encode(t_ids))
-  t_ids.close()
+
   check_jobs()
+
 end
 
 --[[

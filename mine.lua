@@ -76,7 +76,6 @@ end
 
 
 function layer()
-
   limx = x
   limx2 = x_size-(x+1)
   diffx = sign(limx2 - limx)

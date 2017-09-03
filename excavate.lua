@@ -107,18 +107,23 @@ local function checkInSphere(x, z, radius)
   return x*x + z*z < radius*radius
 end
 
-local function cylinder (radius)
+local function sphereY(x, z, radius)
+  return math.sqrt(radius * radius - x*x - z*z)
+end
+
+local function hemisphere (radius)
   local diam = radius * 2 + 1
   local limx = x
   local limx2 = diam-(x+1)
   local diffx = sign(limx2 - limx)
+  local yOffset = 0
   for nextX =limx,limx2,diffx do
     local limz  = z
     local limz2 = diam-(z+1)
     local diffz = sign(limz2 - limz)
     for nextZ =limz,limz2,diffz do
-      goto(nextX, nextZ)
-      if checkInSphere(x, z) then
+      move_position(nextX, nextZ)
+      if checkInSphere(x, z, radius) then
         local distY = sphereY(x, z, radius) + yOffset
         for i=1,distY do
           turtle.digDown()
